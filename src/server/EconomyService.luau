@@ -27,8 +27,6 @@ local function refreshVaultLabel(player: Player)
 	if not state then
 		return
 	end
-	local bases = workspace:FindFirstChild("BazaarWorld")
-	-- bases live in Workspace as Base1..Base6 models
 	local base = workspace:FindFirstChild("Base" .. state.baseIndex)
 	if base then
 		local vault = base:FindFirstChild("VaultPad")

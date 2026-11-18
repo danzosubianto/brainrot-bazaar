@@ -188,11 +188,22 @@ local function runOffer()
 			task.wait(GameConfig.OfferGapSeconds)
 			runOffer()
 		end)
-		-- the offer timer: unp bought, it trudges back into the portal
+		-- the offer timer: unbought, it trudges back into the portal,
+		-- and its label counts down the last ten seconds so a player
+		-- across the street can still make the dash
 		local waited = 0
 		while waited < GameConfig.OfferSeconds and not offer.bought and currentOffer == offer do
 			task.wait(0.5)
 			waited += 0.5
+			local left = GameConfig.OfferSeconds - waited
+			if left <= 10 and not offer.bought then
+				local h = model:FindFirstChild("Head")
+				local g = h and h:FindFirstChild("Label")
+				if g then
+					g.Text.Text = BrainrotData.labelFor(entry, mutation)
+						.. string.format("\nFOR SALE: $%d — LEAVING IN %ds!", cost, math.ceil(left))
+				end
+			end
 		end
 		if not offer.bought and currentOffer == offer then
 			currentOffer = nil

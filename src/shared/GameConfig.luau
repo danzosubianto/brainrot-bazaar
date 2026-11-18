@@ -13,7 +13,7 @@ GameConfig.StartPedestals = 4
 GameConfig.MaxPedestals = 10
 
 -- The Summoning Sidewalk
-GameConfig.OfferSeconds = 35 -- an unp bought offer wanders back into the portal
+GameConfig.OfferSeconds = 35 -- an unbought offer wanders back into the portal
 GameConfig.OfferGapSeconds = 2.5 -- pause between one offer leaving and the next arriving
 GameConfig.StartCarry = 1
 

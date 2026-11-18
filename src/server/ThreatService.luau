@@ -14,6 +14,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local GameConfig = require(ReplicatedStorage.Shared.GameConfig)
+local BrainrotData = require(ReplicatedStorage.Shared.BrainrotData)
 local PlayerService = require(script.Parent.PlayerService)
 local ShopService = require(script.Parent.ShopService)
 
@@ -307,7 +308,14 @@ local function stealWatch()
 								prompt:Destroy()
 							end
 							placed.model.Parent = workspace
-							table.insert(tState.carried, { model = placed.model, entry = { name = placed.id }, mutation = nil })
+							local realEntry = BrainrotData.ById[placed.id]
+							local realMutation = nil
+							for _, m in ipairs(BrainrotData.Mutations) do
+								if m.name == (placed.mutation or "") then
+									realMutation = m
+								end
+							end
+							table.insert(tState.carried, { model = placed.model, entry = realEntry or { name = placed.id }, mutation = realMutation })
 							PlayerService.notify(thief, "Yoink! Stolen fair and square. Get it home!", "good")
 							PlayerService.notify(found.victim, "A rival lifted a brainrot off your base! Lock it next time.", "bad")
 							PlayerService.sync(thief)

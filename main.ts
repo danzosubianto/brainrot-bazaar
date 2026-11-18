@@ -11,7 +11,7 @@
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 // MAKEFUN_OUTPUT_DIR stands in for /output outside the grader's container.
 
-import { copyFileSync, cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-roblox.ts';
@@ -27,8 +27,10 @@ mkdirSync(outDir, { recursive: true });
 copyFileSync(join(repoDir, 'game.rbxl'), join(outDir, 'game.rbxl'));
 copyFileSync(join(repoDir, 'PLAY.json'), join(outDir, 'PLAY.json'));
 cpSync(join(repoDir, 'src'), join(outDir, 'src'), { recursive: true, filter: keepName });
+let shotCount = 0;
 if (existsSync(join(repoDir, 'screenshots'))) {
   cpSync(join(repoDir, 'screenshots'), join(outDir, 'screenshots'), { recursive: true, filter: keepName });
+  shotCount = readdirSync(join(outDir, 'screenshots')).length;
 }
 
 // The caps are the scorer's own: at most 4 screenshots of at most 256 KiB, a
@@ -42,3 +44,9 @@ const dossier = buildDossier(outDir, {
   scripts_max_path_chars: 1048576,
 });
 writeFileSync(join(outDir, 'dossier.json'), dossier);
+
+// Say what was handed in, so a human running this by hand can see at a
+// glance that the entry is whole: the gate wants 3 or 4 screenshots, and a
+// PLAY.json whose place id is not the starter's zero.
+const play = JSON.parse(readFileSync(join(outDir, 'PLAY.json'), 'utf8'));
+console.log(`brainrot-bazaar: handed in game.rbxl, src/, ${shotCount} screenshot(s), PLAY.json place ${play.place_id}`);

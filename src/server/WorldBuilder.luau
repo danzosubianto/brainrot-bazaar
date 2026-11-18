@@ -60,13 +60,25 @@ function WorldBuilder.plotOrigin(index: number): Vector3
 	return Vector3.new(side * 52, 0, -60 + row * 55)
 end
 
+-- Each base wears its own colour — plot tint, fence and gate — so a player
+-- can call out "the purple base" and a screenshot full of bases still reads.
+WorldBuilder.BaseColors = {
+	Color3.fromRGB(240, 120, 120),
+	Color3.fromRGB(120, 180, 255),
+	Color3.fromRGB(140, 230, 150),
+	Color3.fromRGB(255, 210, 110),
+	Color3.fromRGB(200, 140, 255),
+	Color3.fromRGB(120, 230, 220),
+}
+
 local function buildBase(index: number): Model
 	local origin = WorldBuilder.plotOrigin(index)
 	local base = Instance.new("Model")
 	base.Name = "Base" .. index
 
+	local accent = WorldBuilder.BaseColors[index]
 	local plot = part(base, "Plot", Vector3.new(40, 1, 40), origin + Vector3.new(0, 0.5, 0),
-		Color3.fromRGB(232, 205, 160), Enum.Material.Sand)
+		accent, Enum.Material.Sand)
 	plot:SetAttribute("BaseIndex", index)
 
 	-- A low fence the LockGate rises out of when the base is locked.
@@ -76,7 +88,7 @@ local function buildBase(index: number): Model
 		Color3.fromRGB(150, 105, 60), Enum.Material.Wood)
 
 	local gate = part(base, "LockGate", Vector3.new(1, 9, 40), origin + Vector3.new((origin.X > 0 and -20 or 20), -6, 0),
-		Color3.fromRGB(255, 90, 90), Enum.Material.Neon)
+		accent, Enum.Material.Neon)
 	gate.Transparency = 0.45
 	gate.CanCollide = false
 	gate:SetAttribute("HomeY", 4.5)
